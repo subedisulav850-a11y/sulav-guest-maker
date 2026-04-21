@@ -1,0 +1,9 @@
+{
+  "name": "guest-generator-api",
+  "version": "18.0.0",
+  "description": "Professional Guest Generator API for Free Fire",
+  "scripts": {
+    "start": "python api/index.py",
+    "dev": "python api/index.py"
+  }
+}
