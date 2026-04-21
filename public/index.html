@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Generator API - SULAV-CODEX</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a2a 0%, #1a1a3a 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            color: #fff;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 2px solid #00ff88;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 3em;
+            background: linear-gradient(135deg, #00ff88, #00aaff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            color: #888;
+            margin-top: 10px;
+        }
+        
+        .status {
+            display: inline-block;
+            background: #00ff8822;
+            border: 1px solid #00ff88;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 15px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .card h3 {
+            color: #00ff88;
+            margin-bottom: 15px;
+            border-left: 3px solid #00ff88;
+            padding-left: 10px;
+        }
+        
+        select, input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: white;
+            font-size: 1em;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #00ff88, #00aaff);
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .output {
+            background: #0a0a0a;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+        
+        pre {
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .regions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .region-tag {
+            background: rgba(0,255,136,0.2);
+            border: 1px solid #00ff88;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid #333;
+            margin-top: 40px;
+            color: #666;
+        }
+        
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: #00ff88;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 GUEST GENERATOR API</h1>
+            <p class="subtitle">Professional Free Fire Account Generator | All 13 Servers</p>
+            <div class="status" id="apiStatus">Checking API Status...</div>
+        </header>
+        
+        <div class="grid">
+            <div class="card">
+                <h3>📝 Single Account</h3>
+                <select id="singleRegion">
+                    <option value="IND">🇮🇳 India</option>
+                    <option value="ID">🇮🇩 Indonesia</option>
+                    <option value="TH">🇹🇭 Thailand</option>
+                    <option value="VN">🇻🇳 Vietnam</option>
+                    <option value="ME">🌍 Middle East</option>
+                    <option value="BD">🇧🇩 Bangladesh</option>
+                    <option value="PK">🇵🇰 Pakistan</option>
+                    <option value="TW">🇹🇼 Taiwan</option>
+                    <option value="EU">🇪🇺 Europe</option>
+                    <option value="CIS">🇷🇺 Russia/CIS</option>
+                    <option value="NA">🇺🇸 North America</option>
+                    <option value="SAC">🇧🇷 South America</option>
+                    <option value="BR">🇧🇷 Brazil</option>
+                </select>
+                <input type="text" id="singleName" placeholder="Name Prefix (SULAV)" value="SULAV">
+                <input type="text" id="singlePass" placeholder="Password Prefix (test)" value="test">
+                <button onclick="generateSingle()">✨ Generate Account</button>
+            </div>
+            
+            <div class="card">
+                <h3>📦 Bulk Generation</h3>
+                <select id="bulkRegion">
+                    <option value="IND">🇮🇳 India</option>
+                    <option value="ID">🇮🇩 Indonesia</option>
+                    <option value="TH">🇹🇭 Thailand</option>
+                    <option value="VN">🇻🇳 Vietnam</option>
+                    <option value="ME">🌍 Middle East</option>
+                    <option value="BD">🇧🇩 Bangladesh</option>
+                    <option value="PK">🇵🇰 Pakistan</option>
+                    <option value="TW">🇹🇼 Taiwan</option>
+                    <option value="EU">🇪🇺 Europe</option>
+                    <option value="CIS">🇷🇺 Russia/CIS</option>
+                    <option value="NA">🇺🇸 North America</option>
+                    <option value="SAC">🇧🇷 South America</option>
+                    <option value="BR">🇧🇷 Brazil</option>
+                </select>
+                <input type="number" id="bulkCount" placeholder="Count (1-50)" min="1" max="50" value="5">
+                <input type="text" id="bulkName" placeholder="Name Prefix" value="SULAV">
+                <input type="text" id="bulkPass" placeholder="Password Prefix" value="test">
+                <button onclick="generateBulk()">🚀 Generate Bulk</button>
+            </div>
+            
+            <div class="card">
+                <h3>🌍 All Servers</h3>
+                <input type="number" id="allCount" placeholder="Per Region (1-10)" min="1" max="10" value="1">
+                <input type="text" id="allName" placeholder="Name Prefix" value="SULAV">
+                <input type="text" id="allPass" placeholder="Password Prefix" value="test">
+                <button onclick="generateAll()">🌐 Generate All 13 Servers</button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>📋 Available Regions</h3>
+            <div class="regions" id="regionsList">
+                Loading...
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>📄 Output</h3>
+            <div class="output">
+                <pre id="output">Click any button to generate accounts...</pre>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>SULAV-CODEX | Professional Guest Generator v18.0</p>
+            <p>⚠️ For educational purposes only</p>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = window.location.origin;
+        
+        async function checkStatus() {
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                const data = await response.json();
+                document.getElementById('apiStatus').innerHTML = '✅ API Online | ' + data.regions_available + ' Regions Available';
+                document.getElementById('apiStatus').style.borderColor = '#00ff88';
+            } catch (error) {
+                document.getElementById('apiStatus').innerHTML = '❌ API Offline';
+                document.getElementById('apiStatus').style.borderColor = '#ff4444';
+            }
+        }
+        
+        async function loadRegions() {
+            try {
+                const response = await fetch(`${API_URL}/regions`);
+                const data = await response.json();
+                const regionsDiv = document.getElementById('regionsList');
+                regionsDiv.innerHTML = '';
+                data.regions.forEach(region => {
+                    const tag = document.createElement('div');
+                    tag.className = 'region-tag';
+                    tag.innerHTML = `${region.code} - ${region.name}`;
+                    regionsDiv.appendChild(tag);
+                });
+            } catch (error) {
+                document.getElementById('regionsList').innerHTML = 'Failed to load regions';
+            }
+        }
+        
+        async function generateSingle() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<div class="loader"></div> Generating...';
+            
+            const data = {
+                region: document.getElementById('singleRegion').value,
+                name_prefix: document.getElementById('singleName').value || 'SULAV',
+                pass_prefix: document.getElementById('singlePass').value || 'test'
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    output.innerHTML = JSON.stringify(result, null, 2);
+                } else {
+                    output.innerHTML = `❌ Error: ${result.error}`;
+                }
+            } catch (error) {
+                output.innerHTML = `❌ Request failed: ${error.message}`;
+            }
+        }
+        
+        async function generateBulk() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<div class="loader"></div> Generating bulk accounts...';
+            
+            const data = {
+                region: document.getElementById('bulkRegion').value,
+                count: parseInt(document.getElementById('bulkCount').value) || 5,
+                name_prefix: document.getElementById('bulkName').value || 'SULAV',
+                pass_prefix: document.getElementById('bulkPass').value || 'test'
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/generate/bulk`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                output.innerHTML = JSON.stringify(result, null, 2);
+            } catch (error) {
+                output.innerHTML = `❌ Request failed: ${error.message}`;
+            }
+        }
+        
+        async function generateAll() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<div class="loader"></div> Generating accounts for all 13 servers... This may take a moment...';
+            
+            const data = {
+                per_region: parseInt(document.getElementById('allCount').value) || 1,
+                name_prefix: document.getElementById('allName').value || 'SULAV',
+                pass_prefix: document.getElementById('allPass').value || 'test'
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/generate/all`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                output.innerHTML = JSON.stringify(result, null, 2);
+            } catch (error) {
+                output.innerHTML = `❌ Request failed: ${error.message}`;
+            }
+        }
+        
+        // Initialize
+        checkStatus();
+        loadRegions();
+        
+        // Refresh status every 30 seconds
+        setInterval(checkStatus, 30000);
+    </script>
+</body>
+</html>
